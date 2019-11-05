@@ -97,7 +97,7 @@ fn create_text_cache<'font>(_: &()) -> TextCache {
         let buffer_len = INIT_WIDTH as usize * INIT_HEIGHT as usize;
         let init = vec![128; buffer_len];
         let settings = TextureSettings::new();
-        let texture = opengl_graphics::Texture::from_memory_alpha(&init, INIT_WIDTH, INIT_HEIGHT, &settings).unwrap();
+        let texture = opengl_graphics::Texture::from_memory_alpha(&init, INIT_WIDTH, INIT_HEIGHT, &settings).expect("Failed to load Texture!");
         (cache, texture)
     };
     TextCache { text_vertex_data, glyph_cache, text_texture_cache }
@@ -112,11 +112,11 @@ fn create_window() -> PistonWindow<GlutinWindow> {
         .vsync(true)
         .fullscreen(false)
         .build()
-        .unwrap()
+        .expect("Failed to create Window!")
 }
 
 fn get_asset_path() -> PathBuf {
-    find_folder::Search::KidsThenParents(3, 5).for_folder("assets").unwrap()
+    find_folder::Search::KidsThenParents(3, 5).for_folder("assets").expect("Failed to find assets folder!")
 }
 
 fn create_ui() -> Ui {
@@ -129,7 +129,7 @@ fn create_ui() -> Ui {
     // Add a `Font` to the `Ui`'s `font::Map` from file.
     let assets = get_asset_path();
     let font_path = assets.join("fonts/NotoSans/NotoSans-Regular.ttf");
-    ui.fonts.insert_from_file(font_path).unwrap();
+    ui.fonts.insert_from_file(&font_path).expect(&format!("Failed to find font file: {:?}", font_path));
     ui
 }
 
