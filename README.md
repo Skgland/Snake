@@ -1,5 +1,7 @@
 # Snake
 
+![Screenshot](https://raw.githubusercontent.com/Skgland/Snake/master/screenshot.png)
+
 ## Controlls
 F11 - Toggle Fullscreen
 Esc - Back/Pause/Exit
