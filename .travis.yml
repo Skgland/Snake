@@ -12,10 +12,6 @@ jobs:
   allow_failures:
   - rust: nightly
   fast_finish: true
-befor_deploy:
-  - mkdir bin
-  - cp target/*/rust_snake{,.exe} bin
-  - pushd bin && rename 's//'$TRAVIS_OS_NAME'/' *
 deploy:
   provider: releases
   token:
