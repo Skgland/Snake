@@ -1,0 +1,31 @@
+language: rust
+rust:
+- stable
+- beta
+- nightly
+os:
+- osx
+- linux
+- windows
+dist: bionic
+#addons:
+#  apt: 
+#    packages:
+#    - libxcb-shape0-dev
+#    - libxcb-xfixes0-dev
+jobs:
+  allow_failures:
+  - rust: nightly
+  fast_finish: true
+deploy:
+  provider: releases
+  token:
+    secure: HdfAI6ogU93LENUq1mE4ihoYady2qFzm9Tsi25Ou4gf662Rl9Kv30llXO6TaSKf3UUPdChA3+c4Q0JuxeawR4LkvVCDUTTO9pgT7RbKtKFSrva4B4Hxy5aWCgpBvzFJkPIB96NuLBU5Z3MAeadXybCWiZg4yIiVskP+8biTJTfJ5gvNMZ+PxQxMpm/5rmJ821wVsxJHLfD5dylfNQzDRPUpqom8x2ZzNB/Rz3M64hIlF0yFF4OEMkcsaNrHMdv0LEbbbismZEve4XumYqoy4D56UnSLYBKVqO7owl9jENTujwFPxEobhJubtF/rRaxDr1uhqlKi83x39rTPHPNf+SJCr12akhDkHCZQaqxoWrzxziCgi3KnOK0He/xlAxHiHxVt/pGLTFDYa+ctb+5NPXWsc8CDxUjTQW08v851HuWJlJHZ7sDmNpcona13ib/OPOLgSYpKzUexEuxUc/rm/R1h+Q/i7b42E3+7Z1TfwXRcgvj9JfjttwDUesRWfersc/o9fCRp3R9tDHeJmPl0PugzmY9WTdHJWrzcKV36VeV4gPAUDZf8Ss/rAWQiTDqe18l8MvFcqbtQf8wJx9FXaK96K8zA/OIGyqX+jfKY/xouRGa+n2n1fKnBcHOJwG6oPFolthaVC7VXgED8lAnqE8zSXhtHiYRD5tXjZODbiNes=
+  file: 
+    - 'target/*/rust_snake'
+  file_glob: true
+  skip_cleanup: true
+  cleanup: false
+  on:
+    repo: Skgland/Snake
+    tags: true
