@@ -8,11 +8,6 @@ os:
 - linux
 - windows
 dist: bionic
-#addons:
-#  apt: 
-#    packages:
-#    - libxcb-shape0-dev
-#    - libxcb-xfixes0-dev
 jobs:
   allow_failures:
   - rust: nightly
@@ -20,7 +15,7 @@ jobs:
 deploy:
   provider: releases
   token:
-    secure: HdfAI6ogU93LENUq1mE4ihoYady2qFzm9Tsi25Ou4gf662Rl9Kv30llXO6TaSKf3UUPdChA3+c4Q0JuxeawR4LkvVCDUTTO9pgT7RbKtKFSrva4B4Hxy5aWCgpBvzFJkPIB96NuLBU5Z3MAeadXybCWiZg4yIiVskP+8biTJTfJ5gvNMZ+PxQxMpm/5rmJ821wVsxJHLfD5dylfNQzDRPUpqom8x2ZzNB/Rz3M64hIlF0yFF4OEMkcsaNrHMdv0LEbbbismZEve4XumYqoy4D56UnSLYBKVqO7owl9jENTujwFPxEobhJubtF/rRaxDr1uhqlKi83x39rTPHPNf+SJCr12akhDkHCZQaqxoWrzxziCgi3KnOK0He/xlAxHiHxVt/pGLTFDYa+ctb+5NPXWsc8CDxUjTQW08v851HuWJlJHZ7sDmNpcona13ib/OPOLgSYpKzUexEuxUc/rm/R1h+Q/i7b42E3+7Z1TfwXRcgvj9JfjttwDUesRWfersc/o9fCRp3R9tDHeJmPl0PugzmY9WTdHJWrzcKV36VeV4gPAUDZf8Ss/rAWQiTDqe18l8MvFcqbtQf8wJx9FXaK96K8zA/OIGyqX+jfKY/xouRGa+n2n1fKnBcHOJwG6oPFolthaVC7VXgED8lAnqE8zSXhtHiYRD5tXjZODbiNes=
+    secure: lllzHZ7/BmsZYhWqbBOY8R4eWzNrT3aiXQHDn5DZaHZJzJE4M5fSmsYGkaYFE5khYiQ7lVZNS6lukV7rooi3/TggrbVTVVmStl//Gc4bxJM22WSd4okthmIXm6ZRE+nMDWw7BB853KfxLqs9Rhq+aCgUcmYriornpAhnhcdQjPoSJ2mjfM5WqUvJNWBcI/36vZB066DXDTdrAPJy7+3cwlqs7mu7kR60AsBpW3An9xVWaMebRaYvFWyeOtP5s922vu3V9IXtLFdG2rVtzQ7VPB2BACJZ+U+lXj+9/jVPbvbR7tIYR72HTY6GehJ9/loQhwR9ol0Y96YQ+ys9rcPqHmARv60/BKz+MTYPRd7VlDLrlB3XKPsyRxtYBh4PIHLWNluinr23wH+8B9EmPAZKSHw9dwaOIC4rdcLAN7Ios84XV2ZBEv3ajaK6YY//EMiATk6SMankZ+d8rws7U9K71V0bXq11+GSEYroNudlGdKiOaznw1TTS+qJ9iwfgs05ZvhXr+a38A4AAhyQeGiGOofiQ/raIGJfgp2qWN4jzbQ+r+XmsmN6TU0Jijt7mZSeSWB0p2vk+2mHsF4qtkckkTalOP1kn2P6mXXMX4KaArsoyXq9nkb/Z/U+LHSwnGufQJXjSE5Su5YNo39cnMUIQyHAC8vc9DjD869fSXRsAZPQ=
   file: 
     - 'target/*/rust_snake'
   file_glob: true
