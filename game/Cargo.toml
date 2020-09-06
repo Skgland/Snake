@@ -2,6 +2,7 @@
 name = "rust_snake"
 version = "0.1.0"
 authors = ["BB20101997 <bb-github@t-online.de>"]
+license = "MIT"
 edition = "2018"
 
 [dependencies]
