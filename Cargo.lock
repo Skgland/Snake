@@ -952,6 +952,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a9a7ab5d64814df0fe4a4b5ead45ed6c5f181ee3ff04ba344313a6c80446c5d4"
 
 [[package]]
+name = "once_cell"
+version = "1.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af8b08b04175473088b46763e51ee54da5f9a164bc162f615b91bc179dbf15a3"
+
+[[package]]
 name = "ordered-float"
 version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1016,7 +1022,18 @@ version = "0.52.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a0fda264e154f7e9c2fe4524d4e87c9bbf5d1c7719617d5cc265d1151aa8b75"
 dependencies = [
- "pistoncore-event_loop",
+ "pistoncore-event_loop 0.52.0",
+ "pistoncore-input",
+ "pistoncore-window",
+]
+
+[[package]]
+name = "piston"
+version = "0.53.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b6db9e4eb603719bef3900670326b949b374df616540a7417190b69c9710475"
+dependencies = [
+ "pistoncore-event_loop 0.53.0",
  "pistoncore-input",
  "pistoncore-window",
 ]
@@ -1120,7 +1137,7 @@ checksum = "2db7f49cc383b3669da773c7f5d73876503bbeea56a1f599b1e5e0db412aec7e"
 dependencies = [
  "gfx",
  "gfx_device_gl",
- "piston",
+ "piston 0.52.1",
  "piston-texture",
  "piston2d-gfx_graphics",
  "piston2d-graphics",
@@ -1136,6 +1153,17 @@ checksum = "c1afc1c7b1bd1c673ffa0a0651f2d114e68a3cb5db0ba736d8227c4d68783b02"
 dependencies = [
  "pistoncore-input",
  "pistoncore-window",
+]
+
+[[package]]
+name = "pistoncore-event_loop"
+version = "0.53.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "926d55aed01d7c6f883cc06afd5349b2cb5c1243e12a47dc4d3b798121136e9e"
+dependencies = [
+ "pistoncore-input",
+ "pistoncore-window",
+ "spin_sleep",
 ]
 
 [[package]]
@@ -1340,7 +1368,7 @@ dependencies = [
  "gfx_core",
  "gfx_device_gl",
  "linked-hash-map",
- "piston",
+ "piston 0.53.0",
  "piston2d-graphics",
  "piston2d-opengl_graphics",
  "piston_window",
@@ -1523,6 +1551,16 @@ checksum = "917e8ec7f535cd1a6cbf749c8866c24d67c548a80ac48c8e88a182eab5c07bd1"
 dependencies = [
  "nix",
  "smithay-client-toolkit 0.6.6",
+]
+
+[[package]]
+name = "spin_sleep"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2a98101bdc3833e192713c2af0b0dd2614f50d1cf1f7a97c5221b7aac052acc7"
+dependencies = [
+ "once_cell",
+ "winapi",
 ]
 
 [[package]]
