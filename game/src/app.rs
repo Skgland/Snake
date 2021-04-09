@@ -131,8 +131,8 @@ impl App {
         if
         let GameOnly(state) | OverlayMenu(_, state) = &self.gui.active_menu {
             if let GameState::GameState { apple, .. } = &state {
-                let (x, y) = (args.width / 2.0,
-                              args.height / 2.0);
+                let (x, y) = (args.window_size[0] / 2.0,
+                              args.window_size[1] / 2.0);
 
                 let c = c.trans(x, y);
 
@@ -158,7 +158,7 @@ impl App {
     }
 
     pub fn input(&mut self, event: Input, window: &mut PistonWindow<GlutinWindow>) {
-        if let Some(cr_event) = conrod_piston::event::convert(Event::Input(event.clone()), self.gui.ui.win_w, self.gui.ui.win_h) {
+        if let Some(cr_event) = conrod_piston::event::convert(Event::Input(event.clone(),None), self.gui.ui.win_w, self.gui.ui.win_h) {
             self.gui.ui.handle_event(cr_event);
         }
 
@@ -177,11 +177,11 @@ impl App {
 
     pub fn toggle_fullscreen(window: &mut PistonWindow<GlutinWindow>, current: &mut bool) {
         if *current {
-            window.window.window.set_fullscreen(None);
+            window.window.ctx.window().set_fullscreen(None);
             *current = false;
         } else {
-            let monitor = window.window.window.get_primary_monitor();
-            window.window.window.set_fullscreen(Some(monitor));
+            let monitor = window.window.ctx.window().get_primary_monitor();
+            window.window.ctx.window().set_fullscreen(Some(monitor));
             *current = true;
         }
     }

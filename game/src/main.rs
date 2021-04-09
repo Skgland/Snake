@@ -67,7 +67,7 @@ fn main() -> Result<(), MainError> {
     while let Some(e) = events.next(&mut window) {
         e.render(|r| app.render(&mut context, r));
 
-        if let Event::Input(i) = e {
+        if let Event::Input(i,_) = e {
             app.input(i, &mut window);
         } else {
             e.update(|u| app.update(*u, &mut window));
@@ -108,8 +108,7 @@ fn create_window() -> PistonWindow<GlutinWindow> {
     WindowSettings::new(
         "Rust - Snake",
         [INIT_WIDTH, INIT_HEIGHT],
-    ).opengl(OPEN_GL_VERSION)
-        .vsync(true)
+    ).graphics_api(OPEN_GL_VERSION).vsync(true)
         .fullscreen(false)
         .build()
         .expect("Failed to create Window!")
