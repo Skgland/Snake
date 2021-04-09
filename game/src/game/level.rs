@@ -8,14 +8,12 @@ pub enum Direction {
     RIGHT,
 }
 
-
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize)]
 pub enum TileTextureIndex {
     Apple,
     Background,
     SnakeHead,
 }
-
 
 #[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
 pub struct ObjectCoordinate {
@@ -28,10 +26,22 @@ impl std::ops::Add<Direction> for ObjectCoordinate {
 
     fn add(self, other: Direction) -> Self {
         match other {
-            Direction::DOWN => { ObjectCoordinate { x: self.x, y: self.y + 1 } }
-            Direction::UP => { ObjectCoordinate { x: self.x, y: self.y - 1 } }
-            Direction::RIGHT => { ObjectCoordinate { x: self.x + 1, y: self.y } }
-            Direction::LEFT => { ObjectCoordinate { x: self.x - 1, y: self.y } }
+            Direction::DOWN => ObjectCoordinate {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::UP => ObjectCoordinate {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::RIGHT => ObjectCoordinate {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::LEFT => ObjectCoordinate {
+                x: self.x - 1,
+                y: self.y,
+            },
         }
     }
 }

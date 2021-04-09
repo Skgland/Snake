@@ -1,40 +1,39 @@
+extern crate glutin_window;
+extern crate graphics;
+extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
-extern crate graphics;
-extern crate glutin_window;
-extern crate opengl_graphics;
 extern crate ron;
 
-use piston::window::WindowSettings;
+use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::*;
 use piston::input::*;
-use opengl_graphics::{GlGraphics, OpenGL};
+use piston::window::WindowSettings;
 //use conrod_core::color::Colorable;
-use piston_window::TextureSettings;
-use piston_window::PistonWindow;
 use conrod_core::image::Map;
+use piston_window::PistonWindow;
+use piston_window::TextureSettings;
 
-mod gui;
 mod app;
 mod game;
+mod gui;
 
-use app::*;
-use gui::*;
-use conrod_core::Ui;
-use rusttype::gpu_cache::Cache;
-use opengl_graphics::Texture;
-use glutin_window::GlutinWindow;
 use crate::game::TileTextureIndex;
+use app::*;
+use conrod_core::Ui;
+use glutin_window::GlutinWindow;
+use graphics::Graphics;
+use gui::*;
+use opengl_graphics::Texture;
+use rusttype::gpu_cache::Cache;
 use std::collections::btree_map::BTreeMap;
 use std::path::PathBuf;
-use graphics::Graphics;
 
 extern crate find_folder;
 
 pub use error::MainError::{self, *};
 
 mod error;
-
 
 //
 //Initial Setting
@@ -55,19 +54,16 @@ fn main() -> Result<(), MainError> {
     // Create a new game and run it.
     let mut app = create_app(ui)?;
 
-
     println!("Creating render Context!");
     let mut context = create_render_context();
-
 
     println!("Creating event loop iterator");
     let mut events = Events::new(EventSettings::new());
 
-
     while let Some(e) = events.next(&mut window) {
         e.render(|r| app.render(&mut context, r));
 
-        if let Event::Input(i,_) = e {
+        if let Event::Input(i, _) = e {
             app.input(i, &mut window);
         } else {
             e.update(|u| app.update(*u, &mut window));
@@ -97,48 +93,51 @@ fn create_text_cache<'font>(_: &()) -> TextCache {
         let buffer_len = INIT_WIDTH as usize * INIT_HEIGHT as usize;
         let init = vec![128; buffer_len];
         let settings = TextureSettings::new();
-        let texture = opengl_graphics::Texture::from_memory_alpha(&init, INIT_WIDTH, INIT_HEIGHT, &settings).expect("Failed to load Texture!");
+        let texture =
+            opengl_graphics::Texture::from_memory_alpha(&init, INIT_WIDTH, INIT_HEIGHT, &settings)
+                .expect("Failed to load Texture!");
         (cache, texture)
     };
-    TextCache { text_vertex_data, glyph_cache, text_texture_cache }
+    TextCache {
+        text_vertex_data,
+        glyph_cache,
+        text_texture_cache,
+    }
 }
 
 fn create_window() -> PistonWindow<GlutinWindow> {
     // Create an Glutin window.
-    WindowSettings::new(
-        "Rust - Snake",
-        [INIT_WIDTH, INIT_HEIGHT],
-    ).graphics_api(OPEN_GL_VERSION).vsync(true)
+    WindowSettings::new("Rust - Snake", [INIT_WIDTH, INIT_HEIGHT])
+        .graphics_api(OPEN_GL_VERSION)
+        .vsync(true)
         .fullscreen(false)
         .build()
         .expect("Failed to create Window!")
 }
 
 fn get_asset_path() -> PathBuf {
-    find_folder::Search::KidsThenParents(3, 5).for_folder("assets").expect("Failed to find assets folder!")
+    find_folder::Search::KidsThenParents(3, 5)
+        .for_folder("assets")
+        .expect("Failed to find assets folder!")
 }
 
 fn create_ui() -> Ui {
-
     //construct Ui
-    let mut ui = conrod_core::UiBuilder::new([INIT_WIDTH as f64, INIT_HEIGHT as f64])
-        .build();
-
+    let mut ui = conrod_core::UiBuilder::new([INIT_WIDTH as f64, INIT_HEIGHT as f64]).build();
 
     // Add a `Font` to the `Ui`'s `font::Map` from file.
     let assets = get_asset_path();
     let font_path = assets.join("fonts/NotoSans/NotoSans-Regular.ttf");
-    ui.fonts.insert_from_file(&font_path).expect(&format!("Failed to find font file: {:?}", font_path));
+    ui.fonts
+        .insert_from_file(&font_path)
+        .expect(&format!("Failed to find font file: {:?}", font_path));
     ui
 }
 
-type TextureMap<G> = std::collections::btree_map::BTreeMap<TileTextureIndex, <G as Graphics>::Texture>;
-
-
+type TextureMap<G> =
+    std::collections::btree_map::BTreeMap<TileTextureIndex, <G as Graphics>::Texture>;
 
 fn create_app(mut ui: Ui) -> Result<App, String> {
-
-
     // Load the rust logo from file to a piston_window texture.
     //let test_texture = load_texture("test.png");
 
@@ -161,12 +160,17 @@ fn create_app(mut ui: Ui) -> Result<App, String> {
             image_map,
             active_menu: GUIVisibility::MenuOnly(MenuType::Main),
             fullscreen: false,
-        }, texture_map
+        },
+        texture_map,
     ))
 }
 
 fn create_render_context<'font>() -> RenderContext<'font, opengl_graphics::GlGraphics> {
-    let TextCache { text_vertex_data, glyph_cache, text_texture_cache } = create_text_cache(&());
+    let TextCache {
+        text_vertex_data,
+        glyph_cache,
+        text_texture_cache,
+    } = create_text_cache(&());
     let gl = GlGraphics::new(OPEN_GL_VERSION);
     RenderContext {
         text_texture_cache,

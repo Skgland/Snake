@@ -1,25 +1,25 @@
 #![allow(dead_code)]
 
-use rusttype::gpu_cache::Cache;
-use conrod_core::image::Map;
-use conrod_core::Ui;
-use core::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Error;
-use std::fmt::Debug;
-use conrod_core::widget_ids;
-use conrod_core::widget;
-use conrod_core::position::Positionable;
-use conrod_core::Labelable;
-use conrod_core::position::Sizeable;
-use conrod_core::widget::Widget;
-use conrod_core::UiCell;
-use piston_window::PistonWindow;
-use glutin_window::GlutinWindow;
-use piston::window::Window;
 use crate::game::GameState;
 use conrod_core::image::Id;
+use conrod_core::image::Map;
+use conrod_core::position::Positionable;
+use conrod_core::position::Sizeable;
+use conrod_core::widget;
+use conrod_core::widget::Widget;
+use conrod_core::widget_ids;
+use conrod_core::Labelable;
+use conrod_core::Ui;
+use conrod_core::UiCell;
+use core::fmt::Display;
+use glutin_window::GlutinWindow;
 use graphics::Graphics;
+use piston::window::Window;
+use piston_window::PistonWindow;
+use rusttype::gpu_cache::Cache;
+use std::fmt::Debug;
+use std::fmt::Error;
+use std::fmt::Formatter;
 
 // Generate a unique `WidgetId` for each widget.
 widget_ids! {
@@ -68,14 +68,9 @@ impl Debug for GUIVisibility {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         use self::GUIVisibility::*;
         match self {
-            GameOnly(_) => {
-                Ok(())
-            }
+            GameOnly(_) => Ok(()),
 
-            MenuOnly(menu) |
-            OverlayMenu(menu, _) => {
-                Debug::fmt(&menu.menu_name(), f)
-            }
+            MenuOnly(menu) | OverlayMenu(menu, _) => Debug::fmt(&menu.menu_name(), f),
         }
     }
 }
@@ -90,8 +85,7 @@ impl GUIVisibility {
                     *self = GUIVisibility::OverlayMenu(MenuType::Pause, state.clone());
                 }
             }
-            GUIVisibility::MenuOnly(menu_type) |
-            GUIVisibility::OverlayMenu(menu_type, _) => {
+            GUIVisibility::MenuOnly(menu_type) | GUIVisibility::OverlayMenu(menu_type, _) => {
                 let menu = menu_type.back();
                 if let Some(menu) = menu {
                     *self = menu
@@ -109,14 +103,12 @@ impl Display for GUIVisibility {
     }
 }
 
-
 #[derive(Debug)]
 pub enum MenuType {
     Main,
     Pause,
     Custom(Box<dyn Menu>),
 }
-
 
 impl Display for MenuType {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
@@ -129,7 +121,7 @@ pub trait Menu: Debug {
 
     fn handle_input(&self);
 
-    fn update(&self, ui: &mut UiCell, ids: &mut Ids) -> Box<dyn  FnMut(&mut GUIVisibility) -> ()>;
+    fn update(&self, ui: &mut UiCell, ids: &mut Ids) -> Box<dyn FnMut(&mut GUIVisibility) -> ()>;
 
     fn back(&self) -> Option<GUIVisibility>;
 }
@@ -147,16 +139,19 @@ impl Menu for MenuType {
         match self {
             MenuType::Main => {}
             MenuType::Pause => {}
-            MenuType::Custom(menu) => menu.handle_input()
+            MenuType::Custom(menu) => menu.handle_input(),
         }
     }
 
-    fn update(&self, ui: &mut UiCell, ids: &mut Ids) -> Box<dyn  FnMut(&mut GUIVisibility) -> ()> {
+    fn update(&self, ui: &mut UiCell, ids: &mut Ids) -> Box<dyn FnMut(&mut GUIVisibility) -> ()> {
         match self {
             MenuType::Custom(menu) => menu.update(ui, ids),
 
             MenuType::Pause => {
-                widget::Text::new("Pause Menu").font_size(30).mid_top_of(ids.main_canvas).set(ids.menu_title, ui);
+                widget::Text::new("Pause Menu")
+                    .font_size(30)
+                    .mid_top_of(ids.main_canvas)
+                    .set(ids.menu_title, ui);
 
                 let mut result: Box<dyn FnMut(&mut GUIVisibility) -> ()> = Box::new(|_| {});
 
@@ -165,16 +160,14 @@ impl Menu for MenuType {
                     .label_font_size(30)
                     .middle_of(ids.main_canvas)
                     .padded_kid_area_wh_of(ids.main_canvas, ui.win_h / 4.0)
-                    .set(ids.contiue_button, ui) {
-                    result = Box::new(|vis| {
-                        match vis {
-                            GUIVisibility::OverlayMenu(_, game) => {
-                                *vis = GUIVisibility::GameOnly(game.clone())
-                            }
-                            _ => {}
+                    .set(ids.contiue_button, ui)
+                {
+                    result = Box::new(|vis| match vis {
+                        GUIVisibility::OverlayMenu(_, game) => {
+                            *vis = GUIVisibility::GameOnly(game.clone())
                         }
-                    }
-                    );
+                        _ => {}
+                    });
                 }
                 result
             }
@@ -186,11 +179,15 @@ impl Menu for MenuType {
                     .label("Start Game")
                     .middle_of(ids.main_canvas)
                     .padded_kid_area_wh_of(ids.main_canvas, ui.win_h / 4.0)
-                    .set(ids.editor_button, ui) {
+                    .set(ids.editor_button, ui)
+                {
                     result = Box::new(|a| *a = GUIVisibility::GameOnly(GameState::new()));
                 }
 
-                widget::Text::new("Main Menu").font_size(30).mid_top_of(ids.main_canvas).set(ids.menu_title, ui);
+                widget::Text::new("Main Menu")
+                    .font_size(30)
+                    .mid_top_of(ids.main_canvas)
+                    .set(ids.menu_title, ui);
                 result
             }
         }
@@ -200,8 +197,7 @@ impl Menu for MenuType {
         match self {
             MenuType::Main => None,
             MenuType::Pause => Some(GUIVisibility::MenuOnly(MenuType::Main)),
-            MenuType::Custom(menu) => menu.back()
+            MenuType::Custom(menu) => menu.back(),
         }
     }
 }
-

@@ -8,8 +8,7 @@ pub enum MainError {
     Custom(String),
 }
 
-impl From<ron::
-error::Error> for MainError {
+impl From<ron::error::Error> for MainError {
     fn from(se: ron::error::Error) -> Self {
         MainError::SerializeError(se)
     }
