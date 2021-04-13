@@ -1,14 +1,5 @@
-extern crate glutin_window;
-extern crate graphics;
-extern crate opengl_graphics;
-extern crate piston;
-extern crate piston_window;
-extern crate ron;
-
 use opengl_graphics::{GlGraphics, OpenGL};
-use piston::event_loop::*;
-use piston::input::*;
-use piston::window::WindowSettings;
+use piston_window::*;
 //use conrod_core::color::Colorable;
 use conrod_core::image::Map;
 use piston_window::PistonWindow;

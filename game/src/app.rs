@@ -10,8 +10,7 @@ use conrod_core::{
 use glutin_window::GlutinWindow;
 use graphics::Context;
 use opengl_graphics::GlGraphics;
-use piston::input::*;
-pub use piston::window::*;
+pub use piston_window::*;
 use piston_window::{texture::UpdateTexture, PistonWindow};
 use std::collections::btree_map::BTreeMap;
 
