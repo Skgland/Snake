@@ -1325,7 +1325,6 @@ dependencies = [
  "conrod_core",
  "conrod_piston",
  "find_folder",
- "linked-hash-map",
  "piston2d-graphics",
  "piston2d-opengl_graphics",
  "piston_window",

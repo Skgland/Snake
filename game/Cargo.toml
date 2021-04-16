@@ -18,5 +18,3 @@ vecmath = "1.0.0"
 serde = { version = "1.0.125", features = ["derive"] }
 ron= "0.6.4"
 rand= "0.8.3"
-# force newer version, not needed directly
-linked-hash-map = "0.5.4"
