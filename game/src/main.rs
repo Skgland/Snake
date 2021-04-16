@@ -17,12 +17,6 @@ use opengl_graphics::Texture;
 use rusttype::gpu_cache::Cache;
 use std::path::PathBuf;
 
-extern crate find_folder;
-
-pub use error::MainError::{self, *};
-
-mod error;
-
 //
 //Initial Setting
 //
@@ -33,14 +27,14 @@ const OPEN_GL_VERSION: OpenGL = OpenGL::V3_2;
 const INIT_WIDTH: u32 = 200;
 const INIT_HEIGHT: u32 = 200;
 
-fn main() -> Result<(), MainError> {
+fn main() {
     let mut window = create_window();
 
     let ui = create_ui();
 
     println!("Construction app!");
     // Create a new game and run it.
-    let mut app = create_app(ui)?;
+    let mut app = create_app(ui);
 
     println!("Creating render Context!");
     let mut context = create_render_context();
@@ -57,8 +51,6 @@ fn main() -> Result<(), MainError> {
             e.update(|u| app.update(*u, &mut window));
         }
     }
-
-    Ok(())
 }
 
 struct TextCache<'font> {
@@ -122,7 +114,7 @@ fn create_ui() -> Ui {
     ui
 }
 
-fn create_app(mut ui: Ui) -> Result<App, String> {
+fn create_app(mut ui: Ui) -> App {
     // Load the rust logo from file to a piston_window texture.
     //let test_texture = load_texture("test.png");
 
@@ -135,14 +127,14 @@ fn create_app(mut ui: Ui) -> Result<App, String> {
     let generator = ui.widget_id_generator();
     let ids = Ids::new(generator);
 
-    Ok(App::new(GUI {
+    App::new(GUI {
         ui,
         ids,
         image_ids: vec![],
         image_map,
         active_menu: GUIVisibility::MenuOnly(MenuType::Main),
         fullscreen: false,
-    }))
+    })
 }
 
 fn create_render_context<'font>() -> RenderContext<'font, opengl_graphics::GlGraphics> {
