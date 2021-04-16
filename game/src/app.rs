@@ -55,8 +55,6 @@ impl App {
     }
 
     pub fn render(&self, context: &mut RenderContext<G>, args: &RenderArgs) {
-        use graphics::*;
-
         // Specify how to get the drawable texture from the image. In this case, the image
         // *is* the texture.
         fn texture_from_image<T>(img: &T) -> &T {
@@ -155,8 +153,6 @@ impl App {
             } else if let GameState::GameOver { .. } = &state {
             }
         }
-
-        use graphics::*;
     }
 
     pub fn input(&mut self, event: Input) {

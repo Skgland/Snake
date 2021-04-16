@@ -1308,7 +1308,6 @@ dependencies = [
  "conrod_core",
  "conrod_piston",
  "find_folder",
- "piston2d-graphics",
  "piston2d-opengl_graphics",
  "piston_window",
  "pistoncore-glutin_window",

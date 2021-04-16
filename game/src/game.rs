@@ -171,7 +171,7 @@ impl GameState {
     }
 }
 
-pub const PLAYER_SQUARE: graphics::types::Rectangle = [0.0, 0.0, PLAYER_SIZE, PLAYER_SIZE];
+pub const PLAYER_SQUARE: piston_window::types::Rectangle = [0.0, 0.0, PLAYER_SIZE, PLAYER_SIZE];
 pub const TILE_SIZE: f64 = 12.0;
 pub const PLAYER_SIZE: f64 = 10.0;
 pub const PLAYER_COLOR: color::Color = color::RED;
