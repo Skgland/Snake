@@ -1,23 +1,11 @@
 use crate::game::GameState;
-use conrod_core::image::Id;
-use conrod_core::image::Map;
-use conrod_core::position::Positionable;
-use conrod_core::position::Sizeable;
-use conrod_core::widget;
-use conrod_core::widget::Widget;
-use conrod_core::widget_ids;
-use conrod_core::Labelable;
-use conrod_core::Ui;
-use conrod_core::UiCell;
-use core::fmt::Display;
+use conrod_core::{
+    image::Id, image::Map, position::Positionable, position::Sizeable, text::GlyphCache, widget,
+    widget::Widget, widget_ids, Labelable, Ui, UiCell,
+};
 use glutin_window::GlutinWindow;
-use graphics::Graphics;
-use piston_window::PistonWindow;
-use piston_window::Window;
-use rusttype::gpu_cache::Cache;
-use std::fmt::Debug;
-use std::fmt::Error;
-use std::fmt::Formatter;
+use piston_window::{Graphics, PistonWindow, Window};
+use std::fmt::{Debug, Display, Error, Formatter};
 
 // Generate a unique `WidgetId` for each widget.
 widget_ids! {
@@ -38,7 +26,7 @@ pub struct RenderContext<'font, G: Graphics> {
     pub gl: G,
     pub text_texture_cache: opengl_graphics::Texture,
     pub text_vertex_data: Vec<u8>,
-    pub glyph_cache: Cache<'font>,
+    pub glyph_cache: GlyphCache<'font>,
 }
 
 pub struct GUI {

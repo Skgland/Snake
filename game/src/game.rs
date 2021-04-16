@@ -1,11 +1,10 @@
-use graphics::{rectangle, Context, Graphics};
-use piston_window::Transformed;
-
-pub use level::*;
+use piston_window::{rectangle, Context, Graphics, Transformed};
 use std::collections::VecDeque;
 
 pub mod color;
 pub mod level;
+
+pub use level::*;
 
 #[derive(Copy, Clone, Debug)]
 pub struct SnakeTile {

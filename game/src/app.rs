@@ -1,21 +1,19 @@
+use conrod_core::{
+    color::Colorable, position::Positionable, widget, widget::Widget, Borderable, Labelable,
+};
+use conrod_piston::{draw, event};
+use glutin_window::GlutinWindow;
+use opengl_graphics::GlGraphics;
+use piston_window::{texture::UpdateTexture, *};
+use std::collections::btree_map::BTreeMap;
 use std::collections::btree_set::BTreeSet;
 
-use conrod_core::{
-    color::Colorable, input::RenderArgs, position::Positionable, widget, widget::Widget,
-    Borderable, Labelable,
+use crate::game::{
+    Direction, GameState, APPLE_COLOR, GAME_SIZE, PLAYER_SIZE, PLAYER_SQUARE, TILE_SIZE,
 };
-
-use glutin_window::GlutinWindow;
-use graphics::Context;
-use opengl_graphics::GlGraphics;
-pub use piston_window::*;
-use piston_window::{texture::UpdateTexture, PistonWindow};
-use std::collections::btree_map::BTreeMap;
-
-use crate::{
-    game::level::Direction, game::GameState, game::APPLE_COLOR, game::GAME_SIZE, game::PLAYER_SIZE,
-    game::PLAYER_SQUARE, game::TILE_SIZE, gui::GUIVisibility::GameOnly,
-    gui::GUIVisibility::OverlayMenu, gui::*,
+use crate::gui::{
+    GUIVisibility::{self, GameOnly, OverlayMenu},
+    Menu, RenderContext, GUI,
 };
 
 pub struct App {
@@ -111,7 +109,7 @@ impl App {
 
             let view = c.store_view();
 
-            conrod_piston::draw::primitives(
+            draw::primitives(
                 ui.draw(),
                 view,
                 gl,
@@ -162,7 +160,7 @@ impl App {
     }
 
     pub fn input(&mut self, event: Input) {
-        if let Some(cr_event) = conrod_piston::event::convert(
+        if let Some(cr_event) = event::convert(
             Event::Input(event.clone(), None),
             self.gui.ui.win_w,
             self.gui.ui.win_h,

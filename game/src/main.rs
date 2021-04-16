@@ -1,20 +1,15 @@
-use conrod_core::image::Map;
-use opengl_graphics::{GlGraphics, OpenGL};
-use piston_window::PistonWindow;
-use piston_window::TextureSettings;
+use conrod_core::{image::Map, text::GlyphCache, Ui};
+use glutin_window::GlutinWindow;
+use opengl_graphics::{GlGraphics, OpenGL, Texture};
 use piston_window::*;
+use std::path::PathBuf;
 
 mod app;
 mod game;
 mod gui;
 
 use app::*;
-use conrod_core::Ui;
-use glutin_window::GlutinWindow;
 use gui::*;
-use opengl_graphics::Texture;
-use rusttype::gpu_cache::Cache;
-use std::path::PathBuf;
 
 //
 //Initial Setting
@@ -54,7 +49,7 @@ fn main() {
 
 struct TextCache<'font> {
     text_vertex_data: Vec<u8>,
-    glyph_cache: Cache<'font>,
+    glyph_cache: GlyphCache<'font>,
     text_texture_cache: Texture,
 }
 

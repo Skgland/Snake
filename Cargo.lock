@@ -1313,7 +1313,6 @@ dependencies = [
  "piston_window",
  "pistoncore-glutin_window",
  "rand",
- "rusttype 0.8.3",
 ]
 
 [[package]]
