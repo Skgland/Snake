@@ -1,5 +1,3 @@
-#![allow(dead_code, unused_variables)]
-
 use std::collections::btree_set::BTreeSet;
 
 use conrod_core::{
@@ -47,7 +45,6 @@ impl Action {
 
 type G = opengl_graphics::GlGraphics;
 
-const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
 const BLUE: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
@@ -157,14 +154,14 @@ impl App {
                 rectangle(APPLE_COLOR, PLAYER_SQUARE, transform, gl);
 
                 state.draw_player(c, gl);
-            } else if let GameState::GameOver { score } = &state {
+            } else if let GameState::GameOver { .. } = &state {
             }
         }
 
         use graphics::*;
     }
 
-    pub fn input(&mut self, event: Input, window: &mut PistonWindow<GlutinWindow>) {
+    pub fn input(&mut self, event: Input) {
         if let Some(cr_event) = conrod_piston::event::convert(
             Event::Input(event.clone(), None),
             self.gui.ui.win_w,
@@ -203,7 +200,7 @@ impl App {
         }
     }
 
-    pub fn update(&mut self, args: UpdateArgs, window: &mut PistonWindow<GlutinWindow>) {
+    pub fn update(&mut self, window: &mut PistonWindow<GlutinWindow>) {
         use GUIVisibility::*;
 
         let ui = &mut self.gui.ui.set_widgets();
@@ -276,7 +273,7 @@ impl App {
 
                 let mut result: Box<dyn FnMut(&mut GUIVisibility) -> ()> = Box::new(|_| {});
 
-                for press in widget::Button::new()
+                for _press in widget::Button::new()
                     .label("Start New Game")
                     .down_from(self.gui.ids.menu_title, 10.0)
                     .set(self.gui.ids.editor_button, ui)

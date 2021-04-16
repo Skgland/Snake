@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::game::GameState;
 use conrod_core::image::Id;
 use conrod_core::image::Map;
@@ -107,7 +105,6 @@ impl Display for GUIVisibility {
 pub enum MenuType {
     Main,
     Pause,
-    Custom(Box<dyn Menu>),
 }
 
 impl Display for MenuType {
@@ -131,7 +128,6 @@ impl Menu for MenuType {
         match self {
             MenuType::Main => String::from("Main Menu"),
             MenuType::Pause => String::from("Pause Menu"),
-            MenuType::Custom(menu) => menu.menu_name(),
         }
     }
 
@@ -139,14 +135,11 @@ impl Menu for MenuType {
         match self {
             MenuType::Main => {}
             MenuType::Pause => {}
-            MenuType::Custom(menu) => menu.handle_input(),
         }
     }
 
     fn update(&self, ui: &mut UiCell, ids: &mut Ids) -> Box<dyn FnMut(&mut GUIVisibility) -> ()> {
         match self {
-            MenuType::Custom(menu) => menu.update(ui, ids),
-
             MenuType::Pause => {
                 widget::Text::new("Pause Menu")
                     .font_size(30)
@@ -197,7 +190,6 @@ impl Menu for MenuType {
         match self {
             MenuType::Main => None,
             MenuType::Pause => Some(GUIVisibility::MenuOnly(MenuType::Main)),
-            MenuType::Custom(menu) => menu.back(),
         }
     }
 }

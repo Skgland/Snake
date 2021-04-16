@@ -1,9 +1,8 @@
-use opengl_graphics::{GlGraphics, OpenGL};
-use piston_window::*;
-//use conrod_core::color::Colorable;
 use conrod_core::image::Map;
+use opengl_graphics::{GlGraphics, OpenGL};
 use piston_window::PistonWindow;
 use piston_window::TextureSettings;
+use piston_window::*;
 
 mod app;
 mod game;
@@ -46,9 +45,9 @@ fn main() {
         e.render(|r| app.render(&mut context, r));
 
         if let Event::Input(i, _) = e {
-            app.input(i, &mut window);
+            app.input(i);
         } else {
-            e.update(|u| app.update(*u, &mut window));
+            e.update(|_| app.update(&mut window));
         }
     }
 }
