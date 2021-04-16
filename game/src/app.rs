@@ -17,12 +17,11 @@ use std::collections::btree_map::BTreeMap;
 use crate::{
     game::level::Direction, game::GameState, game::APPLE_COLOR, game::GAME_SIZE, game::PLAYER_SIZE,
     game::PLAYER_SQUARE, game::TILE_SIZE, gui::GUIVisibility::GameOnly,
-    gui::GUIVisibility::OverlayMenu, gui::*, TextureMap,
+    gui::GUIVisibility::OverlayMenu, gui::*,
 };
 
 pub struct App {
     pub gui: GUI,
-    pub texture_map: TextureMap<opengl_graphics::GlGraphics>,
     keys_down: BTreeSet<Key>,
 }
 
@@ -53,11 +52,10 @@ const BLUE: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
 impl App {
-    pub fn new(gui: GUI, texture_map: TextureMap<G>) -> Self {
+    pub fn new(gui: GUI) -> Self {
         App {
             gui,
             keys_down: BTreeSet::new(),
-            texture_map,
         }
     }
 
@@ -158,7 +156,7 @@ impl App {
 
                 rectangle(APPLE_COLOR, PLAYER_SQUARE, transform, gl);
 
-                state.draw_player(c, gl, &self.texture_map);
+                state.draw_player(c, gl);
             } else if let GameState::GameOver { score } = &state {
             }
         }

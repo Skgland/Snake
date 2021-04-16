@@ -1,8 +1,6 @@
 use graphics::{rectangle, Context, Graphics};
 use piston_window::Transformed;
-use serde::{Deserialize, Serialize};
 
-use crate::TextureMap;
 pub use level::*;
 use std::collections::VecDeque;
 
@@ -157,12 +155,7 @@ impl GameState {
     }
 
     #[allow(unused_variables)]
-    pub fn draw_player<G: Graphics>(
-        &self,
-        context: Context,
-        gl: &mut G,
-        texture_map: &TextureMap<G>,
-    ) {
+    pub fn draw_player<G: Graphics>(&self, context: Context, gl: &mut G) {
         if let GameState::GameState { snake, .. } = self {
             for tile in snake {
                 let transform = context

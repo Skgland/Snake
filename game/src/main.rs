@@ -9,15 +9,12 @@ mod app;
 mod game;
 mod gui;
 
-use crate::game::TileTextureIndex;
 use app::*;
 use conrod_core::Ui;
 use glutin_window::GlutinWindow;
-use graphics::Graphics;
 use gui::*;
 use opengl_graphics::Texture;
 use rusttype::gpu_cache::Cache;
-use std::collections::btree_map::BTreeMap;
 use std::path::PathBuf;
 
 extern crate find_folder;
@@ -125,9 +122,6 @@ fn create_ui() -> Ui {
     ui
 }
 
-type TextureMap<G> =
-    std::collections::btree_map::BTreeMap<TileTextureIndex, <G as Graphics>::Texture>;
-
 fn create_app(mut ui: Ui) -> Result<App, String> {
     // Load the rust logo from file to a piston_window texture.
     //let test_texture = load_texture("test.png");
@@ -137,23 +131,18 @@ fn create_app(mut ui: Ui) -> Result<App, String> {
     let image_map: Map<opengl_graphics::Texture> = conrod_core::image::Map::new();
     //let test_texture = image_map.insert(test_texture);
 
-    let texture_map = BTreeMap::new(); // don't use any but too lazy to remove everywhere
-
     // Instantiate the generated list of widget identifiers.
     let generator = ui.widget_id_generator();
     let ids = Ids::new(generator);
 
-    Ok(App::new(
-        GUI {
-            ui,
-            ids,
-            image_ids: vec![],
-            image_map,
-            active_menu: GUIVisibility::MenuOnly(MenuType::Main),
-            fullscreen: false,
-        },
-        texture_map,
-    ))
+    Ok(App::new(GUI {
+        ui,
+        ids,
+        image_ids: vec![],
+        image_map,
+        active_menu: GUIVisibility::MenuOnly(MenuType::Main),
+        fullscreen: false,
+    }))
 }
 
 fn create_render_context<'font>() -> RenderContext<'font, opengl_graphics::GlGraphics> {

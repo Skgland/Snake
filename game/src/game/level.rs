@@ -1,6 +1,4 @@
-use super::*;
-
-#[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Debug)]
 pub enum Direction {
     UP,
     DOWN,
@@ -8,14 +6,7 @@ pub enum Direction {
     RIGHT,
 }
 
-#[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize)]
-pub enum TileTextureIndex {
-    Apple,
-    Background,
-    SnakeHead,
-}
-
-#[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Copy)]
 pub struct ObjectCoordinate {
     pub x: i64,
     pub y: i64,
