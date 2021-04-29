@@ -1,0 +1,45 @@
+version: 2
+updates:
+- package-ecosystem: cargo
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: piston_window
+    versions:
+    - 0.118.0
+    - 0.119.0
+    - 0.120.0
+  - dependency-name: pistoncore-glutin_window
+    versions:
+    - 0.68.2
+    - 0.69.0
+  - dependency-name: conrod_core
+    versions:
+    - 0.72.0
+  - dependency-name: conrod_piston
+    versions:
+    - 0.72.0
+  - dependency-name: piston2d-graphics
+    versions:
+    - 0.39.0
+    - 0.40.0
+  - dependency-name: piston2d-opengl_graphics
+    versions:
+    - 0.77.0
+    - 0.78.0
+  - dependency-name: rusttype
+    versions:
+    - 0.8.3
+    - 0.9.2
+  - dependency-name: piston
+    versions:
+    - 0.53.0
+  - dependency-name: rand
+    versions:
+    - 0.8.3
+  - dependency-name: vecmath
+    versions:
+    - 1.0.0
