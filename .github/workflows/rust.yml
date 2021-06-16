@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Native Libraries
+      run: sudo apt-get -y libxcb-renderer0-dev libxcb-shape0-dev libxcb-xfixes0-dev
     - name: Build
       run: cargo build --verbose
     - name: Run tests
