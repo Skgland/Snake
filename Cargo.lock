@@ -169,7 +169,23 @@ version = "0.73.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1a496f6e5d0beceab817e680e469c7097272ee96eff9bee939dd68db6c1a899"
 dependencies = [
- "conrod_derive",
+ "conrod_derive 0.73.0",
+ "copypasta",
+ "daggy",
+ "fnv",
+ "instant",
+ "num",
+ "pistoncore-input",
+ "rusttype 0.8.3",
+]
+
+[[package]]
+name = "conrod_core"
+version = "0.75.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9d824c177533c47ef7b1252b7b87e6c63edb487be200f4fd167a8be8e896481"
+dependencies = [
+ "conrod_derive 0.75.0",
  "copypasta",
  "daggy",
  "fnv",
@@ -191,13 +207,24 @@ dependencies = [
 ]
 
 [[package]]
-name = "conrod_piston"
-version = "0.73.0"
+name = "conrod_derive"
+version = "0.75.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0e309104219bed55d272b34a0295ff316a996dcafea07b9f612e0c768b0f5a1"
+checksum = "bda0b8cddd83d6c26e818cafded383f83cfd41732607abce45b91bca00225a9d"
 dependencies = [
- "conrod_core",
- "piston2d-graphics",
+ "proc-macro2 1.0.26",
+ "quote 1.0.9",
+ "syn",
+]
+
+[[package]]
+name = "conrod_piston"
+version = "0.75.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c290a448844a5cbaeccde2403ff2ddb74c104e04818f04d70aac091ed740feb5"
+dependencies = [
+ "conrod_core 0.75.0",
+ "piston2d-graphics 0.40.0",
  "pistoncore-input",
 ]
 
@@ -1058,7 +1085,7 @@ dependencies = [
  "gfx",
  "piston-gfx_texture",
  "piston-shaders_graphics2d",
- "piston2d-graphics",
+ "piston2d-graphics 0.37.0",
  "shader_version",
 ]
 
@@ -1078,6 +1105,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "piston2d-graphics"
+version = "0.40.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "beb104512055b3bf44fc3d8dad9af88abda16a468d048626ae9b49f634802c67"
+dependencies = [
+ "interpolation",
+ "piston-texture",
+ "piston-viewport",
+ "read_color",
+ "vecmath",
+]
+
+[[package]]
 name = "piston2d-opengl_graphics"
 version = "0.74.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1090,7 +1130,7 @@ dependencies = [
  "piston-shaders_graphics2d",
  "piston-texture",
  "piston-viewport",
- "piston2d-graphics",
+ "piston2d-graphics 0.37.0",
  "shader_version",
 ]
 
@@ -1105,7 +1145,7 @@ dependencies = [
  "piston",
  "piston-texture",
  "piston2d-gfx_graphics",
- "piston2d-graphics",
+ "piston2d-graphics 0.37.0",
  "pistoncore-glutin_window",
  "shader_version",
 ]
@@ -1305,7 +1345,7 @@ checksum = "41cc0f7e4d5d4544e8861606a285bb08d3e70712ccc7d2b84d7c0ccfaf4b05ce"
 name = "rust_snake"
 version = "0.1.0"
 dependencies = [
- "conrod_core",
+ "conrod_core 0.73.0",
  "conrod_piston",
  "find_folder",
  "piston2d-opengl_graphics",
