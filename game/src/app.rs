@@ -2,6 +2,7 @@ use conrod_core::{
     color::Colorable, position::Positionable, widget, widget::Widget, Borderable, Labelable,
 };
 use conrod_piston::{draw, event};
+use glutin::window::Fullscreen;
 use glutin_window::GlutinWindow;
 use opengl_graphics::GlGraphics;
 use piston_window::{texture::UpdateTexture, *};
@@ -188,8 +189,11 @@ impl App {
             window.window.ctx.window().set_fullscreen(None);
             *current = false;
         } else {
-            let monitor = window.window.ctx.window().get_primary_monitor();
-            window.window.ctx.window().set_fullscreen(Some(monitor));
+            window
+                .window
+                .ctx
+                .window()
+                .set_fullscreen(Some(Fullscreen::Borderless(None)));
             *current = true;
         }
     }
