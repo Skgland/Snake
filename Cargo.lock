@@ -247,11 +247,11 @@ dependencies = [
 
 [[package]]
 name = "conrod_piston"
-version = "0.75.0"
+version = "0.76.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c290a448844a5cbaeccde2403ff2ddb74c104e04818f04d70aac091ed740feb5"
+checksum = "d75da3fcc3387341ff83edaedc0a2ddfaf207ff7cd4e033488dbaa7b55239ba3"
 dependencies = [
- "conrod_core 0.75.0",
+ "conrod_core 0.76.0",
  "piston2d-graphics",
  "pistoncore-input",
 ]
