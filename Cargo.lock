@@ -1700,7 +1700,7 @@ dependencies = [
 name = "rust_snake"
 version = "0.1.0"
 dependencies = [
- "conrod_core 0.75.0",
+ "conrod_core 0.76.0",
  "conrod_piston",
  "find_folder",
  "glutin",
