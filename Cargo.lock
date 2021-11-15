@@ -197,7 +197,23 @@ version = "0.75.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e9d824c177533c47ef7b1252b7b87e6c63edb487be200f4fd167a8be8e896481"
 dependencies = [
- "conrod_derive",
+ "conrod_derive 0.75.0",
+ "copypasta",
+ "daggy",
+ "fnv",
+ "instant",
+ "num",
+ "pistoncore-input",
+ "rusttype 0.8.3",
+]
+
+[[package]]
+name = "conrod_core"
+version = "0.76.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e771d90d3a662af197c2772cdf9d71d858e8a56f06c16fc3c791144340444354"
+dependencies = [
+ "conrod_derive 0.76.0",
  "copypasta",
  "daggy",
  "fnv",
@@ -219,12 +235,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "conrod_derive"
+version = "0.76.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1aedfc4d8bd72b652d5e1678dc388627a24307d0d39ad85ab771fe5dbbaddd2f"
+dependencies = [
+ "proc-macro2 1.0.29",
+ "quote 1.0.10",
+ "syn",
+]
+
+[[package]]
 name = "conrod_piston"
 version = "0.75.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c290a448844a5cbaeccde2403ff2ddb74c104e04818f04d70aac091ed740feb5"
 dependencies = [
- "conrod_core",
+ "conrod_core 0.75.0",
  "piston2d-graphics",
  "pistoncore-input",
 ]
@@ -1673,7 +1700,7 @@ dependencies = [
 name = "rust_snake"
 version = "0.1.0"
 dependencies = [
- "conrod_core",
+ "conrod_core 0.76.0",
  "conrod_piston",
  "find_folder",
  "glutin",
