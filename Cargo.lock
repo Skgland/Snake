@@ -1449,9 +1449,9 @@ dependencies = [
 
 [[package]]
 name = "piston2d-opengl_graphics"
-version = "0.78.0"
+version = "0.79.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cccbb5e2364ca23e3227efa2ddfe9957c8a8ffced876271e2d9ef8d8921433fb"
+checksum = "7c7d13866df056b16855e769d2f01cea37aed409e22bbda1de27fb86a3ccf5f8"
 dependencies = [
  "fnv",
  "gl",
@@ -1460,7 +1460,7 @@ dependencies = [
  "piston-shaders_graphics2d",
  "piston-texture",
  "piston-viewport",
- "piston2d-graphics 0.40.0",
+ "piston2d-graphics 0.41.0",
  "shader_version",
 ]
 
