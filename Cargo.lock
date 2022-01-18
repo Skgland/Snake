@@ -193,9 +193,9 @@ checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
 
 [[package]]
 name = "conrod_core"
-version = "0.76.0"
+version = "0.76.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e771d90d3a662af197c2772cdf9d71d858e8a56f06c16fc3c791144340444354"
+checksum = "981c1c7c541392abb08100f31a18694d52ec1d633cd5652d544237375d5184ca"
 dependencies = [
  "conrod_derive",
  "copypasta",
