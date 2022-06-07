@@ -3,7 +3,6 @@ use conrod_core::{
 };
 use conrod_piston::{draw, event};
 use glutin::window::Fullscreen;
-use glutin_window::GlutinWindow;
 use opengl_graphics::GlGraphics;
 use piston_window::{texture::UpdateTexture, *};
 use std::collections::btree_map::BTreeMap;
@@ -184,7 +183,7 @@ impl App {
         };
     }
 
-    pub fn toggle_fullscreen(window: &mut PistonWindow<GlutinWindow>, current: &mut bool) {
+    pub fn toggle_fullscreen(window: &mut PistonWindow, current: &mut bool) {
         if *current {
             window.window.ctx.window().set_fullscreen(None);
             *current = false;
@@ -198,7 +197,7 @@ impl App {
         }
     }
 
-    pub fn update(&mut self, window: &mut PistonWindow<GlutinWindow>) {
+    pub fn update(&mut self, window: &mut PistonWindow) {
         use GUIVisibility::*;
 
         let ui = &mut self.gui.ui.set_widgets();

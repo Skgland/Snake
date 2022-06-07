@@ -1,5 +1,4 @@
 use conrod_core::{image::Map, text::GlyphCache, Ui};
-use glutin_window::GlutinWindow;
 use opengl_graphics::{GlGraphics, OpenGL, Texture};
 use piston_window::*;
 use std::path::PathBuf;
@@ -79,7 +78,10 @@ fn create_text_cache<'font>(_: &()) -> TextCache {
     }
 }
 
-fn create_window() -> PistonWindow<GlutinWindow> {
+fn create_window<W>() -> PistonWindow<W>
+where
+    W: Window + BuildFromWindowSettings + OpenGLWindow,
+{
     // Create an Glutin window.
     WindowSettings::new("Rust - Snake", [INIT_WIDTH, INIT_HEIGHT])
         .graphics_api(OPEN_GL_VERSION)
