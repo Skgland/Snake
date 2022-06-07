@@ -3,7 +3,6 @@ use conrod_core::{
     image::Id, image::Map, position::Positionable, position::Sizeable, text::GlyphCache, widget,
     widget::Widget, widget_ids, Labelable, Ui, UiCell,
 };
-use glutin_window::GlutinWindow;
 use piston_window::{Graphics, PistonWindow, Window};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -62,7 +61,7 @@ impl Debug for GUIVisibility {
 }
 
 impl GUIVisibility {
-    pub fn handle_esc(&mut self, window: &mut PistonWindow<GlutinWindow>) {
+    pub fn handle_esc(&mut self, window: &mut PistonWindow) {
         match self {
             GUIVisibility::GameOnly(state) => {
                 if let GameState::GameOver { .. } = state {
