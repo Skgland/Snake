@@ -10,6 +10,6 @@ piston2d-opengl_graphics = "0.78.0"
 glutin = "0.26.0"
 conrod_core = "0.76.1"
 conrod_piston = "0.76.1"
-piston_window = { version = "0.120.0" , features = ["glutin"]}
+piston_window = { version = "0.127.0" , features = ["glutin"]}
 find_folder = "0.3.0"
 rand = "0.8.5"
