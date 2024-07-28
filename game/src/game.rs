@@ -1,14 +1,46 @@
-use piston_window::{rectangle, Context, Graphics, Transformed};
-use std::collections::VecDeque;
+use eframe::egui::{self, pos2, vec2, Color32, Painter, Rect, Rounding, Sense, Stroke};
+use std::{
+    collections::VecDeque,
+    time::{Duration, Instant},
+};
 
-pub mod color;
-pub mod level;
+#[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Debug)]
+pub enum Direction {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+}
 
-pub use level::*;
+#[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Copy)]
+pub struct ObjectCoordinate {
+    pub x: i8,
+    pub y: i8,
+}
 
-#[derive(Copy, Clone, Debug)]
-pub struct SnakeTile {
-    position: ObjectCoordinate,
+impl std::ops::Add<Direction> for ObjectCoordinate {
+    type Output = ObjectCoordinate;
+
+    fn add(self, other: Direction) -> Self {
+        match other {
+            Direction::DOWN => ObjectCoordinate {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::UP => ObjectCoordinate {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::RIGHT => ObjectCoordinate {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::LEFT => ObjectCoordinate {
+                x: self.x - 1,
+                y: self.y,
+            },
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -18,29 +50,161 @@ pub enum GameState {
     },
     GameState {
         apple: ObjectCoordinate,
-        snake: VecDeque<SnakeTile>,
+        snake: VecDeque<ObjectCoordinate>,
         direction: Direction,
-        update_till_move: u32,
+        next_step: Option<Instant>,
     },
 }
 
-pub fn delay_for_length(length: usize) -> u32 {
-    const MAX_LENGTH: f64 = GAME_SIZE as f64 * GAME_SIZE as f64;
-    const MAX_DELAY: f64 = 25.0;
-
-    0.0f64.max(MAX_DELAY - length as f64 * MAX_DELAY / MAX_LENGTH) as u32
+impl GameState {
+    pub fn perform(&mut self, action: Action) {
+        if let GameState::GameState { direction, .. } = self {
+            match action {
+                Action::UP => *direction = Direction::UP,
+                Action::DOWN => *direction = Direction::DOWN,
+                Action::LEFT => *direction = Direction::LEFT,
+                Action::RIGHT => *direction = Direction::RIGHT,
+            }
+        }
+    }
+}
+pub enum Action {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+}
+pub struct KeyMap {
+    pub up: Vec<egui::Key>,
+    pub down: Vec<egui::Key>,
+    pub left: Vec<egui::Key>,
+    pub right: Vec<egui::Key>,
+}
+impl KeyMap {
+    pub fn actions(&self, ui: &mut egui::Ui) -> impl IntoIterator<Item = Action> {
+        ui.ctx().input(|input| {
+            IntoIterator::into_iter([
+                (&self.up, Action::UP),
+                (&self.down, Action::DOWN),
+                (&self.left, Action::LEFT),
+                (&self.right, Action::RIGHT),
+            ])
+            .flat_map(|(keys, action)| {
+                keys.iter()
+                    .any(|key| input.key_pressed(*key))
+                    .then_some(action)
+            })
+            .collect::<Vec<_>>()
+        })
+    }
 }
 
-pub fn new_snake() -> VecDeque<SnakeTile> {
+impl eframe::egui::Widget for &mut GameState {
+    fn ui(self, ui: &mut eframe::egui::Ui) -> eframe::egui::Response {
+        ui.centered_and_justified(|ui| {
+            match self {
+                GameState::GameState { apple, snake, .. } => {
+                    const SIZE: f32 = GAME_SIZE as f32 * (TILE_SIZE + TILE_PADDING) + TILE_PADDING;
+                    let scale = ui.available_size().min_elem() / SIZE;
+
+                    let (_response, painter) = ui.allocate_painter(
+                        vec2(SIZE * scale, SIZE * scale),
+                        Sense::focusable_noninteractive(),
+                    );
+
+                    fn draw_tile(
+                        painter: &Painter,
+                        tile: &ObjectCoordinate,
+                        color: Color32,
+                        scale: f32,
+                    ) {
+                        painter.rect_filled(
+                            Rect::from_min_size(
+                                pos2(
+                                    ((tile.x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING)
+                                        * scale,
+                                    ((tile.y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING)
+                                        * scale,
+                                ),
+                                vec2(TILE_SIZE * scale, TILE_SIZE * scale),
+                            ),
+                            Rounding::ZERO,
+                            color,
+                        );
+                    }
+
+                    // draw background
+                    painter.rect_filled(
+                        Rect::from_min_size(pos2(0.0, 0.0), vec2(SIZE * scale, SIZE * scale)),
+                        Rounding::ZERO,
+                        Color32::BLUE,
+                    );
+
+                    // draw corners
+                    for x in 1..GAME_SIZE {
+                        let cx =
+                            ((x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0) * scale;
+
+                        for y in 1..GAME_SIZE {
+                            let cy = ((y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0)
+                                * scale;
+                            painter.circle_filled(pos2(cx, cy), scale, Color32::BLACK);
+                        }
+                    }
+
+                    painter.rect_stroke(
+                        Rect::from_min_size(
+                            pos2(TILE_PADDING / 2.0 * scale, TILE_PADDING / 2.0 * scale),
+                            vec2(
+                                GAME_SIZE as f32 * (TILE_SIZE + TILE_PADDING) * scale,
+                                GAME_SIZE as f32 * (TILE_SIZE + TILE_PADDING) * scale,
+                            ),
+                        ),
+                        Rounding::ZERO,
+                        Stroke::new(scale, Color32::BLACK),
+                    );
+
+                    // draw apple
+                    draw_tile(&painter, apple, Color32::GREEN, scale);
+
+                    // draw snake
+                    for segment in snake {
+                        draw_tile(&painter, segment, Color32::RED, scale);
+                    }
+                }
+                GameState::GameOver { score } => {
+                    ui.heading(format!("Final length: {score}"));
+
+                    if ui.button("Start New game").clicked() {
+                        *self = GameState::new()
+                    }
+                }
+            }
+        })
+        .response
+    }
+}
+
+pub fn delay_for_length(length: u32) -> Duration {
+    const MAX_LENGTH: u32 = GAME_SIZE as u32 * GAME_SIZE as u32;
+    const MAX_DELAY: Duration = Duration::from_millis(250);
+
+    MAX_DELAY - MAX_DELAY * length / MAX_LENGTH
+}
+
+pub fn new_snake() -> VecDeque<ObjectCoordinate> {
     vec![
-        SnakeTile {
-            position: ObjectCoordinate { x: 0, y: 0 },
+        ObjectCoordinate {
+            x: GAME_SIZE / 2,
+            y: GAME_SIZE / 2,
         },
-        SnakeTile {
-            position: ObjectCoordinate { x: 0, y: 1 },
+        ObjectCoordinate {
+            x: GAME_SIZE / 2,
+            y: GAME_SIZE / 2 + 1,
         },
-        SnakeTile {
-            position: ObjectCoordinate { x: 0, y: 2 },
+        ObjectCoordinate {
+            x: GAME_SIZE / 2,
+            y: GAME_SIZE / 2 + 2,
         },
     ]
     .into()
@@ -49,36 +213,33 @@ pub fn new_snake() -> VecDeque<SnakeTile> {
 pub fn generate_apple() -> ObjectCoordinate {
     use rand::distributions::{Distribution, Uniform};
 
-    let range: Uniform<i8> = Uniform::from(-GAME_SIZE..GAME_SIZE);
+    let range: Uniform<i8> = Uniform::from(0..GAME_SIZE);
     let mut rng = ::rand::thread_rng();
 
     let x: i8 = range.sample(&mut rng);
     let y: i8 = range.sample(&mut rng);
-    ObjectCoordinate {
-        x: x as i64,
-        y: y as i64,
-    }
+    ObjectCoordinate { x, y }
 }
 
 pub fn wrap_position(mut obj: ObjectCoordinate) -> ObjectCoordinate {
-    if obj.x > (GAME_SIZE as i64) - 1 {
-        obj.x = -GAME_SIZE as i64
-    } else if obj.x < (-GAME_SIZE as i64) {
-        obj.x = (GAME_SIZE as i64) - 1
+    while obj.x < 0 {
+        obj.x += GAME_SIZE;
     }
-    if obj.y > (GAME_SIZE as i64) - 1 {
-        obj.y = -GAME_SIZE as i64
-    } else if obj.y < (-GAME_SIZE as i64) {
-        obj.y = (GAME_SIZE as i64) - 1
+    if obj.x >= GAME_SIZE {
+        obj.x %= GAME_SIZE;
+    }
+
+    while obj.y < 0 {
+        obj.y += GAME_SIZE;
+    }
+    if obj.x >= GAME_SIZE {
+        obj.y %= GAME_SIZE;
     }
     obj
 }
 
 pub fn wall_death(obj: &ObjectCoordinate) -> bool {
-    obj.x > (GAME_SIZE as i64) - 1
-        || obj.x < (-GAME_SIZE as i64)
-        || obj.y > (GAME_SIZE as i64) - 1
-        || obj.y < (-GAME_SIZE as i64)
+    !(0..GAME_SIZE).contains(&obj.x) || !(0..GAME_SIZE).contains(&obj.y)
 }
 
 //Controls whether touching the wall should kill or wrap around
@@ -91,42 +252,42 @@ impl GameState {
             apple: generate_apple(),
             snake: new_snake(),
             direction: Direction::UP,
-            update_till_move: delay_for_length(3),
+            next_step: None,
         }
     }
 
-    //during update
-    pub fn handle_input(&mut self) {
+    pub fn step_time(&mut self) {
         if let GameState::GameState {
             apple,
             snake,
             direction,
-            update_till_move,
+            next_step,
         } = self
         {
-            if *update_till_move == 0 {
+            let Some(next_step) = next_step else {
+                *next_step = Some(Instant::now() + delay_for_length(snake.len() as u32));
+                return;
+            };
+
+            if *next_step <= Instant::now() {
                 //spawn new head in current direction of previous head
                 let new_head = if let Some(head) = snake.front() {
-                    SnakeTile {
-                        position: if !DO_WALL_DEATH {
-                            wrap_position(head.position + *direction)
-                        } else {
-                            head.position + *direction
-                        },
+                    if !DO_WALL_DEATH {
+                        wrap_position(*head + *direction)
+                    } else {
+                        *head + *direction
                     }
                 } else {
-                    SnakeTile {
-                        position: ObjectCoordinate { x: 0, y: 0 },
-                    }
+                    ObjectCoordinate { x: 0, y: 0 }
                 };
 
-                if DO_WALL_DEATH && wall_death(&new_head.position) {
+                if DO_WALL_DEATH && wall_death(&new_head) {
                     *self = GameState::GameOver { score: snake.len() };
                     return;
                 }
 
                 //consume apple
-                if apple == &new_head.position {
+                if apple == &new_head {
                     // generate new apple
                     *apple = generate_apple();
                 } else {
@@ -135,7 +296,7 @@ impl GameState {
                 }
 
                 //check if new_head collides with old tile
-                if snake.iter().any(|tile| tile.position == new_head.position) {
+                if snake.iter().any(|tile| tile == &new_head) {
                     // +1 as tail has already been removed or apple eaten but new_head not yet added
                     *self = GameState::GameOver {
                         score: snake.len() + 1,
@@ -146,34 +307,12 @@ impl GameState {
                 //add new head
                 snake.push_front(new_head);
 
-                *update_till_move = delay_for_length(snake.len());
-            } else {
-                *update_till_move -= 1;
-            }
-        }
-    }
-
-    #[allow(unused_variables)]
-    pub fn draw_player<G: Graphics>(&self, context: Context, gl: &mut G) {
-        if let GameState::GameState { snake, .. } = self {
-            for tile in snake {
-                let transform = context
-                    .trans(-PLAYER_SIZE / 2.0, -PLAYER_SIZE / 2.0)
-                    .trans(
-                        TILE_SIZE * (tile.position.x as f64),
-                        TILE_SIZE * (tile.position.y as f64),
-                    )
-                    .transform;
-
-                rectangle(PLAYER_COLOR, PLAYER_SQUARE, transform, gl);
+                *next_step = Instant::now() + delay_for_length(snake.len() as u32);
             }
         }
     }
 }
 
-pub const PLAYER_SQUARE: piston_window::types::Rectangle = [0.0, 0.0, PLAYER_SIZE, PLAYER_SIZE];
-pub const TILE_SIZE: f64 = 12.0;
-pub const PLAYER_SIZE: f64 = 10.0;
-pub const PLAYER_COLOR: color::Color = color::RED;
-pub const APPLE_COLOR: color::Color = color::GREEN;
-pub const GAME_SIZE: i8 = 16;
+pub const TILE_PADDING: f32 = 2.0;
+pub const TILE_SIZE: f32 = 10.0;
+pub const GAME_SIZE: i8 = 32;
