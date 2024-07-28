@@ -1,9 +1,6 @@
 use crate::game::{GameState, KeyMap};
 use eframe::egui;
-use std::{
-    fmt::{Debug, Display, Error, Formatter},
-    time::Duration,
-};
+use std::fmt::{Debug, Display, Error, Formatter};
 
 #[derive(Debug)]
 pub enum Gui {
@@ -48,7 +45,7 @@ impl eframe::App for Gui {
                     }
 
                     game.step_time();
-                    ui.ctx().request_repaint_after(Duration::from_millis(20));
+                    ui.ctx().request_repaint();
 
                     ui.add(game);
                 }
