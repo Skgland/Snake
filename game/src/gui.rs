@@ -1,6 +1,12 @@
-use crate::game::{GameState, KeyMap};
+use crate::game::{GameSettings, GameState, KeyMap, WallBehaviour};
 use eframe::egui;
 use std::fmt::{Debug, Display, Error, Formatter};
+
+#[derive(Debug)]
+pub struct App {
+    pub state: Gui,
+    pub settings: GameSettings,
+}
 
 #[derive(Debug)]
 pub enum Gui {
@@ -9,7 +15,7 @@ pub enum Gui {
     MainMenu,
 }
 
-impl eframe::App for Gui {
+impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             let (pressed_escape, f11_pressed, is_fullscreen) = ui.input(|ui| {
@@ -21,7 +27,7 @@ impl eframe::App for Gui {
             });
 
             if pressed_escape {
-                if !self.handle_esc() {
+                if !self.state.handle_esc() {
                     ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
                 }
             }
@@ -31,8 +37,8 @@ impl eframe::App for Gui {
                     .send_viewport_cmd(egui::ViewportCommand::Fullscreen(!is_fullscreen))
             }
 
-            match self {
-                Gui::GameOnly(game) => {
+            match self.state {
+                Gui::GameOnly(ref mut game) => {
                     let key_bindings = KeyMap {
                         up: vec![egui::Key::ArrowUp, egui::Key::W],
                         down: vec![egui::Key::ArrowDown, egui::Key::S],
@@ -49,13 +55,13 @@ impl eframe::App for Gui {
 
                     ui.add(game);
                 }
-                Gui::PauseMenu(game) => {
+                Gui::PauseMenu(ref mut game) => {
                     ui.add(&mut *game);
                     let game = game.clone();
 
                     egui::Window::new("Pause Menu").show(ctx, |ui| {
                         if ui.button("Continue").clicked() {
-                            *self = Gui::GameOnly(game);
+                            self.state = Gui::GameOnly(game);
                         };
                     });
                 }
@@ -63,8 +69,34 @@ impl eframe::App for Gui {
                     ui.group(|ui| {
                         ui.heading("Main Menu");
 
+                        egui::ComboBox::from_label("Wall Behaviour")
+                            .selected_text(self.settings.wall_behaviour.name())
+                            .show_ui(ui, |ui| {
+                                ui.selectable_value(
+                                    &mut self.settings.wall_behaviour,
+                                    WallBehaviour::Death,
+                                    WallBehaviour::Death.name(),
+                                );
+                                ui.selectable_value(
+                                    &mut self.settings.wall_behaviour,
+                                    WallBehaviour::Loop,
+                                    WallBehaviour::Loop.name(),
+                                );
+                            });
+
+                        ui.horizontal(|ui| {
+                            ui.label("Game Size");
+                            ui.add(
+                                egui::DragValue::new(&mut self.settings.size[0]).range(0..=i8::MAX),
+                            );
+                            ui.label("by");
+                            ui.add(
+                                egui::DragValue::new(&mut self.settings.size[1]).range(0..=i8::MAX),
+                            );
+                        });
+
                         if ui.button("Start Game").clicked() {
-                            *self = Gui::GameOnly(GameState::new());
+                            self.state = Gui::GameOnly(GameState::new(self.settings.clone()));
                         };
                     });
                 }
