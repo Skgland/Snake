@@ -87,11 +87,11 @@ impl eframe::App for App {
                         ui.horizontal(|ui| {
                             ui.label("Game Size");
                             ui.add(
-                                egui::DragValue::new(&mut self.settings.size[0]).range(0..=i8::MAX),
+                                egui::DragValue::new(&mut self.settings.size[0]).range(1..=i8::MAX),
                             );
                             ui.label("by");
                             ui.add(
-                                egui::DragValue::new(&mut self.settings.size[1]).range(0..=i8::MAX),
+                                egui::DragValue::new(&mut self.settings.size[1]).range(1..=i8::MAX),
                             );
                         });
 
