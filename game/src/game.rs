@@ -1,6 +1,8 @@
 use eframe::egui::{self, pos2, vec2, Color32, Painter, Rect, Rounding, Sense, Stroke};
+use rand::distr::{Distribution, Uniform};
 use std::{
     collections::VecDeque,
+    convert::TryFrom,
     time::{Duration, Instant},
 };
 
@@ -213,11 +215,15 @@ impl eframe::egui::Widget for &mut GameState {
                     }
                 }
                 GameState::GameOver { score, settings } => {
-                    ui.heading(format!("Final length: {score}"));
+                    let score = *score;
+                    let settings = settings.clone();
+                    ui.vertical_centered(|ui| {
+                        ui.heading(format!("Final length: {score}"));
 
-                    if ui.button("Start New game").clicked() {
-                        *self = GameState::new(settings.clone())
-                    }
+                        if ui.button("Start New game").clicked() {
+                            *self = GameState::new(settings)
+                        }
+                    });
                 }
             }
         })
@@ -251,12 +257,14 @@ pub fn new_snake(settings: &GameSettings) -> VecDeque<ObjectCoordinate> {
 }
 
 pub fn generate_apple(settings: &GameSettings) -> ObjectCoordinate {
-    use rand::distributions::{Distribution, Uniform};
+    let mut rng = ::rand::rng();
 
-    let mut rng = ::rand::thread_rng();
-
-    let x: i8 = Uniform::from(0..settings.size[0]).sample(&mut rng);
-    let y: i8 = Uniform::from(0..settings.size[1]).sample(&mut rng);
+    let x: i8 = Uniform::try_from(0..settings.size[0])
+        .expect("the game area width shouldn't be 0")
+        .sample(&mut rng);
+    let y: i8 = Uniform::try_from(0..settings.size[1])
+        .expect("the game area height shouldn't be 0")
+        .sample(&mut rng);
     ObjectCoordinate { x, y }
 }
 
