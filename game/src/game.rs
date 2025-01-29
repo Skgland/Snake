@@ -215,11 +215,15 @@ impl eframe::egui::Widget for &mut GameState {
                     }
                 }
                 GameState::GameOver { score, settings } => {
-                    ui.heading(format!("Final length: {score}"));
+                    let score = *score;
+                    let settings = settings.clone();
+                    ui.vertical_centered(|ui| {
+                        ui.heading(format!("Final length: {score}"));
 
-                    if ui.button("Start New game").clicked() {
-                        *self = GameState::new(settings.clone())
-                    }
+                        if ui.button("Start New game").clicked() {
+                            *self = GameState::new(settings)
+                        }
+                    });
                 }
             }
         })
