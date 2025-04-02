@@ -1,4 +1,6 @@
-use eframe::egui::{self, pos2, vec2, Color32, Painter, Rect, Rounding, Sense, Stroke};
+use eframe::egui::{
+    self, pos2, vec2, Color32, CornerRadius, Painter, Rect, Sense, Stroke, StrokeKind,
+};
 use rand::distr::{Distribution, Uniform};
 use std::{
     collections::VecDeque,
@@ -170,7 +172,7 @@ impl eframe::egui::Widget for &mut GameState {
                                 ),
                                 vec2(TILE_SIZE * scale, TILE_SIZE * scale),
                             ),
-                            Rounding::ZERO,
+                            CornerRadius::ZERO,
                             color,
                         );
                     }
@@ -178,7 +180,7 @@ impl eframe::egui::Widget for &mut GameState {
                     // draw background
                     painter.rect_filled(
                         Rect::from_min_size(pos2(0.0, 0.0), vec2(size_x * scale, size_y * scale)),
-                        Rounding::ZERO,
+                        CornerRadius::ZERO,
                         Color32::BLUE,
                     );
 
@@ -202,8 +204,9 @@ impl eframe::egui::Widget for &mut GameState {
                                 settings.size[1] as f32 * (TILE_SIZE + TILE_PADDING) * scale,
                             ),
                         ),
-                        Rounding::ZERO,
+                        CornerRadius::ZERO,
                         Stroke::new(scale, Color32::BLACK),
+                        StrokeKind::Inside,
                     );
 
                     // draw apple
