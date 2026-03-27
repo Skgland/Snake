@@ -16,8 +16,8 @@ pub enum Gui {
 }
 
 impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show_inside(ui, |ui| {
             let (pressed_escape, f11_pressed, is_fullscreen) = ui.input(|ui| {
                 (
                     ui.key_pressed(egui::Key::Escape),
@@ -26,10 +26,8 @@ impl eframe::App for App {
                 )
             });
 
-            if pressed_escape {
-                if !self.state.handle_esc() {
-                    ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
-                }
+            if pressed_escape && !self.state.handle_esc() {
+                ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
             }
 
             if f11_pressed {
@@ -59,7 +57,7 @@ impl eframe::App for App {
                     ui.add(&mut *game);
                     let game = game.clone();
 
-                    egui::Window::new("Pause Menu").show(ctx, |ui| {
+                    egui::Window::new("Pause Menu").show(ui.ctx(), |ui| {
                         if ui.button("Continue").clicked() {
                             self.state = Gui::GameOnly(game);
                         };

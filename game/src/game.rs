@@ -10,10 +10,10 @@ use std::{
 
 #[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq, Debug)]
 pub enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
+    Up,
+    Down,
+    Left,
+    Right,
 }
 
 #[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Copy)]
@@ -27,19 +27,19 @@ impl std::ops::Add<Direction> for ObjectCoordinate {
 
     fn add(self, other: Direction) -> Self {
         match other {
-            Direction::DOWN => ObjectCoordinate {
+            Direction::Down => ObjectCoordinate {
                 x: self.x,
                 y: self.y + 1,
             },
-            Direction::UP => ObjectCoordinate {
+            Direction::Up => ObjectCoordinate {
                 x: self.x,
                 y: self.y - 1,
             },
-            Direction::RIGHT => ObjectCoordinate {
+            Direction::Right => ObjectCoordinate {
                 x: self.x + 1,
                 y: self.y,
             },
-            Direction::LEFT => ObjectCoordinate {
+            Direction::Left => ObjectCoordinate {
                 x: self.x - 1,
                 y: self.y,
             },
@@ -96,19 +96,19 @@ impl GameState {
     pub fn perform(&mut self, action: Action) {
         if let GameState::GameState { direction, .. } = self {
             match action {
-                Action::UP => *direction = Direction::UP,
-                Action::DOWN => *direction = Direction::DOWN,
-                Action::LEFT => *direction = Direction::LEFT,
-                Action::RIGHT => *direction = Direction::RIGHT,
+                Action::Up => *direction = Direction::Up,
+                Action::Down => *direction = Direction::Down,
+                Action::Left => *direction = Direction::Left,
+                Action::Right => *direction = Direction::Right,
             }
         }
     }
 }
 pub enum Action {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
+    Up,
+    Down,
+    Left,
+    Right,
 }
 pub struct KeyMap {
     pub up: Vec<egui::Key>,
@@ -120,10 +120,10 @@ impl KeyMap {
     pub fn actions(&self, ui: &mut egui::Ui) -> impl IntoIterator<Item = Action> {
         ui.ctx().input(|input| {
             IntoIterator::into_iter([
-                (&self.up, Action::UP),
-                (&self.down, Action::DOWN),
-                (&self.left, Action::LEFT),
-                (&self.right, Action::RIGHT),
+                (&self.up, Action::Up),
+                (&self.down, Action::Down),
+                (&self.left, Action::Left),
+                (&self.right, Action::Right),
             ])
             .flat_map(|(keys, action)| {
                 keys.iter()
@@ -311,7 +311,7 @@ impl GameState {
             // Rotation for the square.
             apple: generate_apple(&settings),
             snake: new_snake(&settings),
-            direction: Direction::UP,
+            direction: Direction::Up,
             next_step: None,
             settings,
         }
@@ -327,14 +327,14 @@ impl GameState {
         } = self
         {
             let Some(next_step) = next_step else {
-                *next_step = Some(Instant::now() + delay_for_length(snake.len() as u32, &settings));
+                *next_step = Some(Instant::now() + delay_for_length(snake.len() as u32, settings));
                 return;
             };
 
             if *next_step <= Instant::now() {
                 //spawn new head in current direction of previous head
                 let new_head = if let Some(head) = snake.front() {
-                    let Some(pos) = new_position(*head, *direction, &settings) else {
+                    let Some(pos) = new_position(*head, *direction, settings) else {
                         *self = GameState::GameOver {
                             score: snake.len(),
                             settings: settings.clone(),
@@ -361,13 +361,13 @@ impl GameState {
                 // either consume an apple or remove the tail
                 if apple == &new_head {
                     // generate new apple
-                    *apple = generate_apple(&settings);
+                    *apple = generate_apple(settings);
                 } else {
                     // no apple consumed remove last tail
                     snake.pop_back();
                 }
 
-                *next_step = Instant::now() + delay_for_length(snake.len() as u32, &settings);
+                *next_step = Instant::now() + delay_for_length(snake.len() as u32, settings);
             }
         }
     }
