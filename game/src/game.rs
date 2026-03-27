@@ -1,5 +1,6 @@
 use eframe::egui::{
-    self, pos2, vec2, Color32, CornerRadius, Painter, Rect, Sense, Stroke, StrokeKind,
+    self, pos2, remap_clamp, vec2, Color32, CornerRadius, Painter, Pos2, Rect, Sense, Stroke,
+    StrokeKind,
 };
 use rand::distr::{Distribution, Uniform};
 use std::{
@@ -149,72 +150,90 @@ impl eframe::egui::Widget for &mut GameState {
                         settings.size[0] as f32 * (TILE_SIZE + TILE_PADDING) + TILE_PADDING;
                     let size_y: f32 =
                         settings.size[0] as f32 * (TILE_SIZE + TILE_PADDING) + TILE_PADDING;
-                    let scale = (ui.available_width() / size_x).min(ui.available_height() / size_y);
+                    let board_size = Rect::from_min_size(Pos2::ZERO, vec2(size_x, size_y));
 
-                    let (_response, painter) = ui.allocate_painter(
-                        vec2(size_x * scale, size_y * scale),
+                    let desired_scale =
+                        (ui.available_width() / size_x).min(ui.available_height() / size_y);
+
+                    let (response, painter) = ui.allocate_painter(
+                        vec2(size_x * desired_scale, size_y * desired_scale),
                         Sense::focusable_noninteractive(),
                     );
 
                     fn draw_tile(
                         painter: &Painter,
+                        board_size: Rect,
+                        game_area: Rect,
                         tile: &ObjectCoordinate,
                         color: Color32,
                         scale: f32,
                     ) {
+                        let x = (tile.x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING;
+                        let x = remap_clamp(x, board_size.x_range(), game_area.x_range());
+
+                        let y = (tile.y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING;
+                        let y = remap_clamp(y, board_size.y_range(), game_area.y_range());
+
                         painter.rect_filled(
-                            Rect::from_min_size(
-                                pos2(
-                                    ((tile.x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING)
-                                        * scale,
-                                    ((tile.y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING)
-                                        * scale,
-                                ),
-                                vec2(TILE_SIZE * scale, TILE_SIZE * scale),
-                            ),
+                            Rect::from_min_size(pos2(x, y), vec2(TILE_SIZE, TILE_SIZE) * scale),
                             CornerRadius::ZERO,
                             color,
                         );
                     }
 
-                    // draw background
-                    painter.rect_filled(
-                        Rect::from_min_size(pos2(0.0, 0.0), vec2(size_x * scale, size_y * scale)),
-                        CornerRadius::ZERO,
-                        Color32::BLUE,
+                    let scale = (response.rect.width() / (size_x + 1.0))
+                        .min(response.rect.height() / (size_y + 2.0));
+                    let game_area = Rect::from_center_size(
+                        response.rect.center(),
+                        vec2(scale * size_x, scale * size_y),
                     );
 
-                    // draw corners
-                    for x in 1..settings.size[0] {
-                        let cx =
-                            ((x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0) * scale;
+                    // draw background
+                    painter.rect_filled(game_area, CornerRadius::ZERO, Color32::BLUE);
 
-                        for y in 1..settings.size[1] {
-                            let cy = ((y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0)
-                                * scale;
+                    // draw border
+                    painter.rect_stroke(
+                        game_area,
+                        CornerRadius::ZERO,
+                        Stroke::new(scale, Color32::BLACK),
+                        StrokeKind::Middle,
+                    );
+
+                    let game_area = game_area.shrink(0.5);
+
+                    // draw corners
+                    for x in 0..=settings.size[0] {
+                        let cx = (x as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0;
+                        let cx = remap_clamp(cx, board_size.x_range(), game_area.x_range());
+
+                        for y in 0..=settings.size[1] {
+                            let cy = (y as f32) * (TILE_SIZE + TILE_PADDING) + TILE_PADDING / 2.0;
+                            let cy = remap_clamp(cy, board_size.y_range(), game_area.y_range());
+
                             painter.circle_filled(pos2(cx, cy), scale, Color32::BLACK);
                         }
                     }
 
-                    painter.rect_stroke(
-                        Rect::from_min_size(
-                            pos2(TILE_PADDING / 2.0 * scale, TILE_PADDING / 2.0 * scale),
-                            vec2(
-                                settings.size[0] as f32 * (TILE_SIZE + TILE_PADDING) * scale,
-                                settings.size[1] as f32 * (TILE_SIZE + TILE_PADDING) * scale,
-                            ),
-                        ),
-                        CornerRadius::ZERO,
-                        Stroke::new(scale, Color32::BLACK),
-                        StrokeKind::Inside,
-                    );
-
                     // draw apple
-                    draw_tile(&painter, apple, Color32::GREEN, scale);
+                    draw_tile(
+                        &painter,
+                        board_size,
+                        game_area,
+                        apple,
+                        Color32::GREEN,
+                        scale,
+                    );
 
                     // draw snake
                     for segment in snake {
-                        draw_tile(&painter, segment, Color32::RED, scale);
+                        draw_tile(
+                            &painter,
+                            board_size,
+                            game_area,
+                            segment,
+                            Color32::RED,
+                            scale,
+                        );
                     }
                 }
                 GameState::GameOver { score, settings } => {
