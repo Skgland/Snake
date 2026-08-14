@@ -17,7 +17,7 @@ pub enum Gui {
 
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show_inside(ui, |ui| {
+        egui::CentralPanel::default().show(ui, |ui| {
             let (pressed_escape, f11_pressed, is_fullscreen) = ui.input(|ui| {
                 (
                     ui.key_pressed(egui::Key::Escape),
